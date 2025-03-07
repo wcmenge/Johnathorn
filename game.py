@@ -5,6 +5,7 @@ from Enemy.dragon import Dragon
 from Character.mage import Mage
 from Character.druid import Druid
 from Character.archer import Archer
+from Environment.environment import Environment
 from powerUp import PowerUp
 import random
 
@@ -107,6 +108,8 @@ def end_screen(win):
 def initalizePygame(char):
     pygame.init()
     myWindow = pygame.display.set_mode((WIDTH, HEIGHT))
+    environment: Environment = Environment(WIDTH, HEIGHT)
+
     clock = pygame.time.Clock()
     keymap = {}
 
@@ -124,21 +127,16 @@ def initalizePygame(char):
     else:
         char = Archer(500, 500, 0, 0, 100, 100, 300, 300)
 
-    background = pygame.image.load("images/castle.jpg")
-    new_background = pygame.transform.scale(background, (WIDTH, HEIGHT))
-    myWindow.blit(new_background, (0, 0))
+    myWindow.blit(environment.skybox, (0, 0))
+    environment.playAmbientSound()
 
-    sounds = ["Sounds/sound.ogg", "Sounds/sound1.ogg", "Sounds/sound2.ogg"]
-    pygame.mixer.music.load(random.choice(sounds))
-    pygame.mixer.music.play()
-
-    return myWindow, clock, keymap, joystick, background, new_background, sounds, char
+    return myWindow, clock, keymap, joystick, char, environment 
 
 
     
 
 def run_game(char):
-    my_win, clock, keymap, joystick, background, new_background, sounds, char = initalizePygame(char)
+    my_win, clock, keymap, joystick, char, environment = initalizePygame(char)
 
     dragon_sheet = pygame.image.load("images/thats_our_dragon.png")
     dragon = Dragon(dragon_sheet, 800, 500, 200, 200, 500, char)
@@ -183,7 +181,7 @@ def run_game(char):
             p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "speed")
             power = True
 
-        my_win.blit(new_background, (0, 0))
+        my_win.blit(environment.skybox, (0, 0))
         
         dragon.draw(my_win)
         dragon.draw_health(my_win)

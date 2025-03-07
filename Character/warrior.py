@@ -1,9 +1,13 @@
 from vector import Vector
 from Character.character import Character
 import pygame
+
 DEFAULT = 0
-WALKING = 1
+WALKING_RIGHT = 1
+WALKING_LEFT=3
 ATTACKING = 2
+JUMP = 4
+
 
 class Warrior(Character):
 
@@ -12,46 +16,34 @@ class Warrior(Character):
 
 
     def __init__(self, x_pos, y_pos, x_vel, y_vel, health, armour, xs, ys):
-        wWalk1 = pygame.image.load("images/warrior/wWalk1.png")
-        self.img = wWalk1
-        bounding_box = (x_pos, y_pos, self.img.get_width(), self.img.get_height())
-        Character.__init__(self, x_pos, y_pos, x_vel, y_vel, health, armour, xs, ys, bounding_box)
-        self.armour = armour
-        walking = []
         attacking = []
         ##Load sprites
-        wAttack1 = pygame.image.load("images/warrior/wAttack1.png")
-        wAttack2 = pygame.image.load("images/warrior/wAttack2.png")
-        wAttack3 = pygame.image.load("images/warrior/wAttack3.png")
-        wAttack4 = pygame.image.load("images/warrior/wAttack4.png")
-        wAttack5 = pygame.image.load("images/warrior/wAttack5.png")
-        wWalk2 = pygame.image.load("images/warrior/wWalk2.png")
-        wWalk3 = pygame.image.load("images/warrior/wWalk3.png")
-        wWalk4 = pygame.image.load("images/warrior/wWalk4.png")
-        wWalk5 = pygame.image.load("images/warrior/wWalk5.png")
-        wWalk6 = pygame.image.load("images/warrior/wWalk6.png")
-        wWalk7 = pygame.image.load("images/warrior/wWalk7.png")
-        wWalk8 = pygame.image.load("images/warrior/wWalk8.png")
-        walking.append(wWalk1)
-        walking.append(wWalk2)
-        walking.append(wWalk3)
-        walking.append(wWalk4)
-        walking.append(wWalk5)
-        walking.append(wWalk6)
-        walking.append(wWalk7)
-        walking.append(wWalk8)
-        attacking.append(wAttack1)
-        attacking.append(wAttack2)
-        attacking.append(wAttack3)
-        attacking.append(wAttack4)
-        attacking.append(wAttack5)
-        default = []
-        default.append(wWalk1)
-        self.expressions.append(default)
-        self.expressions.append(walking)
-        self.expressions.append(attacking)
 
-        
+        for i in range(1,5):
+            image = pygame.image.load(f'images/warrior/wAttack{i}.png')
+            attacking.append(image)
+
+
+        walkingRight = []
+        walkingLeft = []
+        for i in range(1,8):
+            image = pygame.image.load(f'images/warrior/wWalk{i}.png')
+            walkingRight.append(image)
+            walkingLeft.append(pygame.transform.flip(image, True, False))
+
+        default = []
+        default.append(walkingRight[0])
+
+        self.armour = armour
+        self.img = walkingLeft[0]
+        self.expressions.append(default)
+        self.expressions.append(walkingRight)
+        self.expressions.append(attacking)
+        self.expressions.append(walkingLeft)
+
+        bounding_box = (x_pos, y_pos, self.img.get_width(), self.img.get_height())
+        Character.__init__(self, x_pos, y_pos, x_vel, y_vel, health, armour, xs, ys, bounding_box)
+
 ##        ##Setting Expressions from the sprite sheet
 ##        self.expressions["default"] = sheet.subsurface(0,0,115,105)
 ##        self.expressions["walkLeft"] = pygame.transform.flip(sheet.subsurface(115,230,105,210), True, False)

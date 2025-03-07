@@ -1,10 +1,6 @@
 import pygame
-from Character.character import Character
-from Character.warrior import Warrior
+from Character.character_defaults import CharacterDefault
 from Enemy.dragon import Dragon
-from Character.mage import Mage
-from Character.druid import Druid
-from Character.archer import Archer
 from Environment.environment import Environment, Window
 from powerUp import PowerUp
 import random
@@ -122,22 +118,13 @@ def initalizePygame(char):
         joystick = pygame.joystick.Joystick(0)
         joystick.init()
 
-    if char == "Warrior":
-        char = Warrior(500, 500, 0, 0, 200, 100, 50, 50)
-    elif char == "Mage":
-        char = Mage(500, 500, 0, 0, 50, 100, 100, 100)
-    elif char == "Druid":
-        char = Druid(500, 500, 0, 0, 100, 100, 100, 100)
-    else:
-        char = Archer(500, 500, 0, 0, 100, 100, 300, 300)
+    char = CharacterDefault.handleSelection(char)
 
     myWindow.window.blit(environment.skybox, (0, 0))
     environment.playAmbientSound()
 
     return myWindow, clock, keymap, joystick, char, environment 
 
-
-    
 
 #TODO: Use GameClock Class instead of directly using pygame clock()
 def run_game(char):

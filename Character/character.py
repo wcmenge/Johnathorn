@@ -1,3 +1,4 @@
+from enum import Enum
 from vector import Vector
 import pygame
 
@@ -173,3 +174,4 @@ class Character:
         two sprites collide based on their bounding boxes.
         """
         return self.get_bbox().colliderect(other.get_bbox())
+

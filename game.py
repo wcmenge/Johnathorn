@@ -1,7 +1,8 @@
 import pygame
-from Character.character_defaults import CharacterDefault
+import sys
 from Enemy.dragon import Dragon
 from Environment.environment import Environment, Window
+from Character.character_defaults import CharacterDefault
 from powerUp import PowerUp
 import random
 
@@ -47,7 +48,8 @@ def start_screen():
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return None
+                pygame.quit()
+                sys.exit()
             elif event.type == pygame.KEYDOWN:
                 keymap[event.key] = True
             elif event.type == pygame.KEYUP:
@@ -94,6 +96,9 @@ def end_screen(win):
             elif event.type == pygame.KEYUP:
                 key = event.key
                 keymap[key] = False
+            elif event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
             if keymap.get(pygame.K_r, False):
                 play_game()
                 keepGoing = False
@@ -145,6 +150,8 @@ def run_game(char):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 keepGoing = False
+                pygame.quit()
+                sys.exit() 
             elif event.type == pygame.KEYDOWN:
                 key = event.key
                 keymap[key] = True

@@ -15,7 +15,7 @@ class CharacterDefault(Enum):
     ARCHER = Archer(500, 500, 0, 0, 100, 100, 300, 300)
 
     @staticmethod
-    def handleSelection(characterType: str):
+    def handleSelection(characterType: str) -> Character:
         if characterType == "Warrior":
             return CharacterDefault.WARRIOR.value
         elif characterType == "Mage":
@@ -25,5 +25,5 @@ class CharacterDefault(Enum):
         elif characterType == "Archer":
             return CharacterDefault.ARCHER.value
         else:
-            pass
+            return CharacterDefault.ARCHER.value
 

@@ -29,8 +29,8 @@ def start_screen():
     pygame.mixer.music.play()
     pygame.mixer.music.set_volume(.1)
     
-    width = WIDTH#1280
-    height = HEIGHT#960
+    width = WIDTH
+    height = HEIGHT
     my_win = pygame.display.set_mode((width, height))
     
     # Load background image once
@@ -67,8 +67,8 @@ def start_screen():
 
 def end_screen(win):
     keepGoing = True
-    width = WIDTH#1280
-    height = HEIGHT#960
+    width = WIDTH
+    height = HEIGHT
     my_win = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
     if win:
@@ -104,12 +104,10 @@ def end_screen(win):
 
     pygame.quit()
 
-def run_game(char):
+def initalizePygame(char):
     pygame.init()
+    myWindow = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
-    width = WIDTH#1280
-    height = HEIGHT#960
-    my_win = pygame.display.set_mode((width, height))
     keymap = {}
 
     joystick = None
@@ -117,7 +115,6 @@ def run_game(char):
         joystick = pygame.joystick.Joystick(0)
         joystick.init()
 
-    dragon_sheet = pygame.image.load("images/thats_our_dragon.png")
     if char == "Warrior":
         char = Warrior(500, 500, 0, 0, 200, 100, 50, 50)
     elif char == "Mage":
@@ -127,16 +124,25 @@ def run_game(char):
     else:
         char = Archer(500, 500, 0, 0, 100, 100, 300, 300)
 
-    dragon = Dragon(dragon_sheet, 800, 500, 200, 200, 500, char)
     background = pygame.image.load("images/castle.jpg")
-    new_background = pygame.transform.scale(background, (width, height))
-    my_win.blit(new_background, (0, 0))
+    new_background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+    myWindow.blit(new_background, (0, 0))
 
     sounds = ["Sounds/sound.ogg", "Sounds/sound1.ogg", "Sounds/sound2.ogg"]
     pygame.mixer.music.load(random.choice(sounds))
     pygame.mixer.music.play()
 
-    clock = pygame.time.Clock()
+    return myWindow, clock, keymap, joystick, background, new_background, sounds, char
+
+
+    
+
+def run_game(char):
+    my_win, clock, keymap, joystick, background, new_background, sounds, char = initalizePygame(char)
+
+    dragon_sheet = pygame.image.load("images/thats_our_dragon.png")
+    dragon = Dragon(dragon_sheet, 800, 500, 200, 200, 500, char)
+
     dt = 0
     keepGoing = True
     power = False
@@ -168,13 +174,13 @@ def run_game(char):
         
         p_up = None
         if chance == 25:
-            p_up = PowerUp(p_img, random.randint(100, width), height - 25, "health")
+            p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "health")
             power = True
         elif chance == 50:
-            p_up = PowerUp(p_img, random.randint(100, width), height - 25, "damage")
+            p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "damage")
             power = True
         elif chance == 75:
-            p_up = PowerUp(p_img, random.randint(100, width), height - 25, "speed")
+            p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "speed")
             power = True
 
         my_win.blit(new_background, (0, 0))
@@ -184,13 +190,13 @@ def run_game(char):
 
         dragon.arrive(char, 1.0/10)
         dragon.apply_steering()
-        dragon.move(dt, width, height)
+        dragon.move(dt, WIDTH, HEIGHT)
 
         char.handle_input(keymap, dragon, joystick)        
 
         char.draw(my_win)
         char.draw_health(my_win)
-        char.simulate(dt, width, height)
+        char.simulate(dt, WIDTH, HEIGHT)
 
         if power and p_up != None:
             p_up.draw(my_win)

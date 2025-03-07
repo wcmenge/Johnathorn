@@ -28,22 +28,21 @@ class Druid (Character):
                 dWalk6 = pygame.image.load("images/druid/dWalk6.png")
                 dWalk7 = pygame.image.load("images/druid/dWalk7.png")
 
-                walking = [] 
                 attacking = []
                 default = []
                 default.append(dWalk1)
-                walking.append(dWalk1)
-                walking.append(dWalk2)
-                walking.append(dWalk3)
-                walking.append(dWalk4)
-                walking.append(dWalk5)
-                walking.append(dWalk6)
-                walking.append(dWalk7)
                 attacking.append(dAttack1)
+         
+                # Create a list for walking right
+                walking_right = [dWalk1, dWalk2, dWalk3, dWalk4, dWalk5, dWalk6, dWalk7]
+
+                # Create a list for walking left by flipping each image horizontally
+                walking_left = [pygame.transform.flip(img, True, False) for img in walking_right]
                 attacking.append(dAttack2)
 
                 self.expressions.append(default)
-                self.expressions.append(walking)
+                self.expressions.append(walking_right)
+                self.expressions.append(walking_left)
                 self.expressions.append(attacking)
 
         def attack(self):

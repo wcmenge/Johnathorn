@@ -28,20 +28,20 @@ class Mage(Character):
         mWalk7 = pygame.image.load("images/mage/mWalk7.png")
         
         ##Setting Expressions from the sprite sheet
-        walking = []
         attacking = []
         default = []
         attacking.append(mAttack)
-        walking.append(mWalk1)
-        walking.append(mWalk2)
-        walking.append(mWalk3)
-        walking.append(mWalk4)
-        walking.append(mWalk5)
-        walking.append(mWalk6)
-        walking.append(mWalk7)
         default.append(mWalk1)
+
+        # Create a list for walking right
+        walking_right = [mWalk1, mWalk2, mWalk3, mWalk4, mWalk5, mWalk6, mWalk7]
+
+        # Create a list for walking left by flipping each image horizontally
+        walking_left = [pygame.transform.flip(img, True, False) for img in walking_right]
+
         self.expressions.append(default)
-        self.expressions.append(walking)
+        self.expressions.append(walking_left)
+        self.expressions.append(walking_right)
         self.expressions.append(attacking)
         
     def heal(self, health, mana):

@@ -31,7 +31,7 @@ class Warrior(Character):
         wWalk5 = pygame.image.load("images/warrior/wWalk5.png")
         wWalk6 = pygame.image.load("images/warrior/wWalk6.png")
         wWalk7 = pygame.image.load("images/warrior/wWalk7.png")
-        wWalk8 = pygame.image.load("Images/warrior/wWalk8.png")
+        wWalk8 = pygame.image.load("images/warrior/wWalk8.png")
         walking.append(wWalk1)
         walking.append(wWalk2)
         walking.append(wWalk3)

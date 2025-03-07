@@ -19,7 +19,7 @@ def start_screen():
     pygame.init()
     pygame.mixer.music.load("Sounds/opening_sound.ogg")
     pygame.mixer.music.play()
-    pygame.mixer.music.set_volume(.50)
+    pygame.mixer.music.set_volume(.25)
     
     width = 3440#1280
     height = 1440#960

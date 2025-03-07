@@ -8,6 +8,11 @@ from Character.archer import Archer
 from powerUp import PowerUp
 import random
 
+R2BUTTON = 5
+L2BUTTON = 4
+SQUAREBUTTON = 2
+XBUTTON = 0
+
 def play_game():
     char = start_screen()
     win = run_game(char)
@@ -93,6 +98,7 @@ def end_screen(win):
             if keymap.get(pygame.K_q, False):
                 keepGoing = False
 
+
     pygame.quit()
 
 def run_game(char):
@@ -102,6 +108,9 @@ def run_game(char):
     height = 1440#960
     my_win = pygame.display.set_mode((width, height))
     keymap = {}
+    if pygame.joystick.get_count() > 0:
+        joystick = pygame.joystick.Joystick(0)
+        joystick.init()
 
     dragon_sheet = pygame.image.load("images/thats_our_dragon.png")
     if char == "Warrior":
@@ -171,7 +180,7 @@ def run_game(char):
         dragon.apply_steering()
         dragon.move(dt, width, height)
 
-        char.handle_input(keymap, dragon)        
+        char.handle_input(keymap, dragon,joystick)        
         char.draw(my_win)
         char.draw_health(my_win)
         char.simulate(dt, width, height)

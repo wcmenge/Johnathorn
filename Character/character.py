@@ -112,15 +112,11 @@ class Character:
         if self.pos.y + 105 < 960:
             self.velocity.y += 10
 
-    def handle_input(self, keymap, target):
-        # Reset horizontal velocity each frame
-        self.velocity.x = 0
+    # def handle_input(self, keymap, target):
+    def handle_input(self, keymap, target, joystick=None):
+        self.velocity.x = 0  # Reset velocity before applying movement
 
-        # WASD mapping:
-        # W: jump
-        # A: move left
-        # D: move right
-        # S: attack (you may choose to map attack to a different key like SPACE if preferred)
+        # Keyboard Controls
         if keymap.get(pygame.K_w, False):
             self.jump()
         if keymap.get(pygame.K_a, False):
@@ -133,7 +129,25 @@ class Character:
             self.attack(target)
             self.expression = ATTACKING
 
-        #self.simulateGravity()
+        # Controller Support
+        if joystick:
+            axis_x = joystick.get_axis(0)  # Left stick horizontal movement
+            a_button = joystick.get_button(0)  # A button for jumping
+            x_button = joystick.get_button(2)  # X button for attacking
+
+            # Movement using the left stick
+            if abs(axis_x) > 0.2:  # Deadzone to avoid drift
+                self.velocity.x = axis_x * self.xs
+                self.expression = WALKING_LEFT if axis_x < 0 else WALKING_RIGHT
+
+            # Jumping with the A button
+            if a_button:
+                self.jump()
+
+            # Attacking with the X button
+            if x_button:
+                self.attack(target)
+                self.expression = ATTACKING
 
     def draw_health(self, window):
         left = int(window.get_width() * 0.03)

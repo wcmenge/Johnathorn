@@ -13,6 +13,9 @@ L2BUTTON = 4
 SQUAREBUTTON = 2
 XBUTTON = 0
 
+WIDTH = 1240
+HEIGHT = 960
+
 def play_game():
     char = start_screen()
     win = run_game(char)
@@ -24,10 +27,10 @@ def start_screen():
     pygame.init()
     pygame.mixer.music.load("Sounds/opening_sound.ogg")
     pygame.mixer.music.play()
-    pygame.mixer.music.set_volume(.25)
+    pygame.mixer.music.set_volume(.1)
     
-    width = 3440#1280
-    height = 1440#960
+    width = WIDTH#1280
+    height = HEIGHT#960
     my_win = pygame.display.set_mode((width, height))
     
     # Load background image once
@@ -64,8 +67,8 @@ def start_screen():
 
 def end_screen(win):
     keepGoing = True
-    width = 3440#1280
-    height = 1440#960
+    width = WIDTH#1280
+    height = HEIGHT#960
     my_win = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
     if win:
@@ -104,10 +107,12 @@ def end_screen(win):
 def run_game(char):
     pygame.init()
     clock = pygame.time.Clock()
-    width = 3440#1280
-    height = 1440#960
+    width = WIDTH#1280
+    height = HEIGHT#960
     my_win = pygame.display.set_mode((width, height))
     keymap = {}
+
+    joystick = None
     if pygame.joystick.get_count() > 0:
         joystick = pygame.joystick.Joystick(0)
         joystick.init()
@@ -161,6 +166,7 @@ def run_game(char):
         ptemp_img = pygame.image.load("images/p_up.png")
         p_img = pygame.transform.scale(ptemp_img, (25, 25))
         
+        p_up = None
         if chance == 25:
             p_up = PowerUp(p_img, random.randint(100, width), height - 25, "health")
             power = True
@@ -175,17 +181,18 @@ def run_game(char):
         
         dragon.draw(my_win)
         dragon.draw_health(my_win)
-        dragon.steering = []
+
         dragon.arrive(char, 1.0/10)
         dragon.apply_steering()
         dragon.move(dt, width, height)
 
-        char.handle_input(keymap, dragon,joystick)        
+        char.handle_input(keymap, dragon, joystick)        
+
         char.draw(my_win)
         char.draw_health(my_win)
         char.simulate(dt, width, height)
 
-        if power:
+        if power and p_up != None:
             p_up.draw(my_win)
             power = p_up.collide(char)
             

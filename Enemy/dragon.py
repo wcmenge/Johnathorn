@@ -7,6 +7,7 @@ import pygame
 class Dragon(Enemy):
     expressions = {}
     expression = "default"
+    steering = []
 
     def __init__(self, sheet, x_pos, y_pos, x_vel, y_vel, health, target):
         self.expressions["default"] = pygame.transform.scale2x(pygame.transform.flip(sheet.subsurface(0,0,115,110), True, False))

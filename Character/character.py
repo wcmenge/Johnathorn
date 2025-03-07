@@ -88,6 +88,9 @@ class Character:
     def move(self, millisecs):
         self.pos.y += self.velocity.y * float(millisecs) / 1000
         self.pos.x += self.velocity.x * float(millisecs) / 1000
+        if self.velocity.x == 0:
+            self.animtimer = 0
+            self.animidx = 0
 
     def simulate(self, millisecs, width, height):
         self.animtimer += millisecs

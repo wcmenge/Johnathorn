@@ -158,8 +158,6 @@ class Enemy:
         if it should be faster than the speed limit."""
         if self.velocity.length() > self.speedlimit.length():
             self.velocity = self.velocity.normalize().times(self.speedlimit.length())
-            print("Clamp")
-            self.attack()
 
 
     def stop_v (self):

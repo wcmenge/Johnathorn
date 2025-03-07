@@ -1,10 +1,10 @@
 import pygame
-from character import Character
-from warrior import Warrior
-from dragon import Dragon
-from mage import Mage
-from druid import Druid
-from archer import Archer
+from Character.character import Character
+from Character.warrior import Warrior
+from Enemy.dragon import Dragon
+from Character.mage import Mage
+from Character.druid import Druid
+from Character.archer import Archer
 from powerUp import PowerUp
 import random
 
@@ -13,14 +13,16 @@ def play_game():
     win = run_game(char)
     end_screen(win)
     
+    
 
 def start_screen():
     pygame.init()
-    pygame.mixer.music.load("opening_sound.ogg")
+    pygame.mixer.music.load("Sounds/opening_sound.ogg")
     pygame.mixer.music.play()
+    pygame.mixer.music.set_volume(.50)
     
-    width = 1280
-    height = 960
+    width = 3440#1280
+    height = 1440#960
     my_win = pygame.display.set_mode((width, height))
     
     # Load background image once
@@ -57,8 +59,8 @@ def start_screen():
 
 def end_screen(win):
     keepGoing = True
-    width = 1280
-    height = 960
+    width = 3440#1280
+    height = 1440#960
     my_win = pygame.display.set_mode((width, height))
     clock = pygame.time.Clock()
     if win:
@@ -96,8 +98,8 @@ def end_screen(win):
 def run_game(char):
     pygame.init()
     clock = pygame.time.Clock()
-    width = 1280
-    height = 960
+    width = 3440#1280
+    height = 1440#960
     my_win = pygame.display.set_mode((width, height))
     keymap = {}
 
@@ -116,7 +118,7 @@ def run_game(char):
     new_background = pygame.transform.scale(background, (width, height))
     my_win.blit(new_background, (0, 0))
 
-    sounds = ["sound.ogg", "sound1.ogg", "sound2.ogg"]
+    sounds = ["Sounds/sound.ogg", "Sounds/sound1.ogg", "Sounds/sound2.ogg"]
     pygame.mixer.music.load(random.choice(sounds))
     pygame.mixer.music.play()
 

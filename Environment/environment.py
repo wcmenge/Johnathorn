@@ -28,6 +28,12 @@ class Environment():
         pygame.mixer.music.load(self.ambientSound)
         pygame.mixer.music.play()
 
+    def stopAmbientSound(self):
+        pygame.mixer.music.stop()
+
+    def pickRandomSoundFromList(self):
+        self.ambientSound = random.choice(AMBIENT_SOUNDS_LIST)
+
     def initializeEnvironment(self) -> None:
         pass
 
@@ -35,4 +41,17 @@ class Environment():
         pass
 
     pass
+
+class Window():
+    window: Surface
+    width: int
+    height: int
+
+    environment: Environment
+
+    def __init__(self, width, height, window) -> None:
+        self.width = width
+        self.height = height
+        self.window = window 
+
 

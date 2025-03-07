@@ -5,7 +5,7 @@ from Enemy.dragon import Dragon
 from Character.mage import Mage
 from Character.druid import Druid
 from Character.archer import Archer
-from Environment.environment import Environment
+from Environment.environment import Environment, Window
 from powerUp import PowerUp
 import random
 
@@ -23,7 +23,8 @@ def play_game():
     end_screen(win)
     
     
-
+#TODO: Change this function to use new environment class for main menu screen
+#TODO: Use GameClock Class instead of directly using pygame clock()
 def start_screen():
     pygame.init()
     pygame.mixer.music.load("Sounds/opening_sound.ogg")
@@ -66,6 +67,8 @@ def start_screen():
         if keymap.get(pygame.K_d, False):
             return "Druid"
 
+#TODO: Change function to use new environment class for end screen
+#TODO: Use GameClock Class instead of directly using pygame clock()
 def end_screen(win):
     keepGoing = True
     width = WIDTH
@@ -82,7 +85,6 @@ def end_screen(win):
         my_win.blit(new_background, (0, 0))
     while keepGoing:
         clock.tick(30)  # Limit frame rate to 30 FPS
-        
 
         keymap = {}
         pygame.display.update()
@@ -105,9 +107,11 @@ def end_screen(win):
 
     pygame.quit()
 
+#TODO: Use GameClock Class instead of directly using pygame clock()
 def initalizePygame(char):
     pygame.init()
-    myWindow = pygame.display.set_mode((WIDTH, HEIGHT))
+
+    myWindow: Window = Window(WIDTH, HEIGHT, pygame.display.set_mode((WIDTH, HEIGHT)))
     environment: Environment = Environment(WIDTH, HEIGHT)
 
     clock = pygame.time.Clock()
@@ -127,7 +131,7 @@ def initalizePygame(char):
     else:
         char = Archer(500, 500, 0, 0, 100, 100, 300, 300)
 
-    myWindow.blit(environment.skybox, (0, 0))
+    myWindow.window.blit(environment.skybox, (0, 0))
     environment.playAmbientSound()
 
     return myWindow, clock, keymap, joystick, char, environment 
@@ -135,6 +139,7 @@ def initalizePygame(char):
 
     
 
+#TODO: Use GameClock Class instead of directly using pygame clock()
 def run_game(char):
     my_win, clock, keymap, joystick, char, environment = initalizePygame(char)
 
@@ -181,10 +186,10 @@ def run_game(char):
             p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "speed")
             power = True
 
-        my_win.blit(environment.skybox, (0, 0))
+        my_win.window.blit(environment.skybox, (0, 0))
         
-        dragon.draw(my_win)
-        dragon.draw_health(my_win)
+        dragon.draw(my_win.window)
+        dragon.draw_health(my_win.window)
 
         dragon.arrive(char, 1.0/10)
         dragon.apply_steering()
@@ -192,12 +197,12 @@ def run_game(char):
 
         char.handle_input(keymap, dragon, joystick)        
 
-        char.draw(my_win)
-        char.draw_health(my_win)
+        char.draw(my_win.window)
+        char.draw_health(my_win.window)
         char.simulate(dt, WIDTH, HEIGHT)
 
         if power and p_up != None:
-            p_up.draw(my_win)
+            p_up.draw(my_win.window)
             power = p_up.collide(char)
             
         pygame.display.update()

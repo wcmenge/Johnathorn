@@ -5,14 +5,26 @@ from Environment.environment import Environment, Window
 from Character.character_defaults import CharacterDefault
 from powerUp import PowerUp
 import random
-
+import pygame_menu
+import os
 R2BUTTON = 5
 L2BUTTON = 4
 SQUAREBUTTON = 2
 XBUTTON = 0
 
-WIDTH = 1240
-HEIGHT = 960
+WIDTH = 1920
+HEIGHT = 1080
+FULLSCREEN = False
+
+def set_resolution(value, resolution):
+    global WIDTH, HEIGHT, FULLSCREEN
+    if resolution == 'Full Screen':
+        FULLSCREEN = True
+        info = pygame.display.Info()
+        WIDTH, HEIGHT = info.current_w, info.current_h
+    else:
+        FULLSCREEN = False
+        WIDTH, HEIGHT = resolution
 
 def play_game():
     char = start_screen()
@@ -22,19 +34,48 @@ def play_game():
     
 #TODO: Change this function to use new environment class for main menu screen
 #TODO: Use GameClock Class instead of directly using pygame clock()
-def start_screen():
+def startMenu():
     pygame.init()
+    my_win = pygame.display.set_mode((WIDTH, HEIGHT))
+    width = WIDTH
+    height = HEIGHT
+   
+    menu = pygame_menu.Menu('Select Resolution', WIDTH, HEIGHT, theme=pygame_menu.themes.THEME_DARK)
+
+
+
+    resolutions = [
+        ('1920x1080 (1080p)', (1920, 1080)),
+        ('2560x1440 (1440p)', (2560, 1420)),
+        ('3840x2160 (4K)', (3840, 2160)),
+        ('2560x1080 (UWHD)', (2560, 1080)),
+        ('3440x1440 (UWQHD)', (3440, 1440)),
+        ('5120x2160 (5K2K)', (5120, 2160)),
+        ('Full Screen', 'Full Screen')
+    ]
+
+    menu.add.selector('Resolution :', resolutions, onchange=set_resolution)
+    menu.add.button('Start Game', play_game)
+    menu.add.button('Quit', pygame_menu.events.EXIT)
+    menu.mainloop(my_win)
+
+
+
+def start_screen():
+    
     pygame.mixer.music.load("Sounds/opening_sound.ogg")
     pygame.mixer.music.play()
     pygame.mixer.music.set_volume(.1)
     
-    width = WIDTH
-    height = HEIGHT
-    my_win = pygame.display.set_mode((width, height))
-    
+    flags = pygame.FULLSCREEN if FULLSCREEN else 0
+    my_win = pygame.display.set_mode((WIDTH, HEIGHT), flags)
+    if not FULLSCREEN:
+        # Center the window on the screen
+        os.environ['SDL_VIDEO_WINDOW_POS'] = f"{(pygame.display.Info().current_w - WIDTH) // 2},{(pygame.display.Info().current_h - HEIGHT) // 2}"
+
     # Load background image once
     background = pygame.image.load("images/JOHNATHORN.png")
-    new_background = pygame.transform.scale(background, (width, height))
+    new_background = pygame.transform.scale(background, (my_win.get_width(), my_win.get_height()))
     
     clock = pygame.time.Clock()
     keymap = {}
@@ -69,18 +110,12 @@ def start_screen():
 #TODO: Use GameClock Class instead of directly using pygame clock()
 def end_screen(win):
     keepGoing = True
-    width = WIDTH
-    height = HEIGHT
-    my_win = pygame.display.set_mode((width, height))
+    flags = pygame.FULLSCREEN if FULLSCREEN else 0
+    my_win = pygame.display.set_mode((WIDTH, HEIGHT), flags)
     clock = pygame.time.Clock()
-    if win:
-        background = pygame.image.load("images/END_SCREEN.png")
-        new_background = pygame.transform.scale(background, (width, height))
-        my_win.blit(new_background, (0, 0))
-    else:
-        background = pygame.image.load("images/END_SCREEN.png")
-        new_background = pygame.transform.scale(background, (width, height))
-        my_win.blit(new_background, (0, 0))
+    background = pygame.image.load("images/END_SCREEN.png")
+    new_background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+    my_win.blit(new_background, (0, 0))
     while keepGoing:
         clock.tick(30)  # Limit frame rate to 30 FPS
 
@@ -112,7 +147,8 @@ def end_screen(win):
 def initalizePygame(char):
     pygame.init()
 
-    myWindow: Window = Window(WIDTH, HEIGHT, pygame.display.set_mode((WIDTH, HEIGHT)))
+    flags = pygame.FULLSCREEN if FULLSCREEN else 0
+    myWindow: Window = Window(WIDTH, HEIGHT, pygame.display.set_mode((WIDTH, HEIGHT), flags))
     environment: Environment = Environment(WIDTH, HEIGHT)
 
     clock = pygame.time.Clock()
@@ -215,4 +251,6 @@ def run_game(char):
 
     pygame.quit()
 
-play_game()
+
+
+startMenu()

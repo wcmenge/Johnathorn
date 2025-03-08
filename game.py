@@ -11,26 +11,23 @@ L2BUTTON = 4
 SQUAREBUTTON = 2
 XBUTTON = 0
 
-WIDTH = 1240
-HEIGHT = 960
-
 def play_game():
-    char = start_screen()
-    win = run_game(char)
-    end_screen(win)
+    pygame.init()
+    my_win = pygame.display.set_mode()
+    char = start_screen(my_win)
+    win = run_game(char, my_win)
+    end_screen(win, my_win)
     
     
 #TODO: Change this function to use new environment class for main menu screen
 #TODO: Use GameClock Class instead of directly using pygame clock()
-def start_screen():
-    pygame.init()
+def start_screen(my_win):
     pygame.mixer.music.load("Sounds/opening_sound.ogg")
     pygame.mixer.music.play()
     pygame.mixer.music.set_volume(.1)
     
-    width = WIDTH
-    height = HEIGHT
-    my_win = pygame.display.set_mode((width, height))
+    width = my_win.get_width()
+    height = my_win.get_height()
     
     # Load background image once
     background = pygame.image.load("images/JOHNATHORN.png")
@@ -67,11 +64,11 @@ def start_screen():
 
 #TODO: Change function to use new environment class for end screen
 #TODO: Use GameClock Class instead of directly using pygame clock()
-def end_screen(win):
+def end_screen(win, my_win):
     keepGoing = True
-    width = WIDTH
-    height = HEIGHT
-    my_win = pygame.display.set_mode((width, height))
+    my_win = pygame.display.set_mode()
+    width = my_win.get_width()
+    height = my_win.get_height()
     clock = pygame.time.Clock()
     if win:
         background = pygame.image.load("images/END_SCREEN.png")
@@ -109,11 +106,9 @@ def end_screen(win):
     pygame.quit()
 
 #TODO: Use GameClock Class instead of directly using pygame clock()
-def initalizePygame(char):
-    pygame.init()
+def initalizePygame(char, my_win):
 
-    myWindow: Window = Window(WIDTH, HEIGHT, pygame.display.set_mode((WIDTH, HEIGHT)))
-    environment: Environment = Environment(WIDTH, HEIGHT)
+    environment: Environment = Environment(my_win.get_width(), my_win.get_height())
 
     clock = pygame.time.Clock()
     keymap = {}
@@ -125,15 +120,17 @@ def initalizePygame(char):
 
     char = CharacterDefault.handleSelection(char)
 
-    myWindow.window.blit(environment.skybox, (0, 0))
+    my_win.blit(environment.skybox, (0, 0))
     environment.playAmbientSound()
 
-    return myWindow, clock, keymap, joystick, char, environment 
+    return my_win, clock, keymap, joystick, char, environment 
 
 
 #TODO: Use GameClock Class instead of directly using pygame clock()
-def run_game(char):
-    my_win, clock, keymap, joystick, char, environment = initalizePygame(char)
+def run_game(char, my_win):
+    my_win, clock, keymap, joystick, char, environment = initalizePygame(char, my_win)
+    width = my_win.get_width()
+    height = my_win.get_height()
 
     dragon_sheet = pygame.image.load("images/thats_our_dragon.png")
     dragon = Dragon(dragon_sheet, 800, 500, 200, 200, 500, char)
@@ -171,32 +168,32 @@ def run_game(char):
         
         p_up = None
         if chance == 25:
-            p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "health")
+            p_up = PowerUp(p_img, random.randint(100, width), height - 25, "health")
             power = True
         elif chance == 50:
-            p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "damage")
+            p_up = PowerUp(p_img, random.randint(100, width), height - 25, "damage")
             power = True
         elif chance == 75:
-            p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "speed")
+            p_up = PowerUp(p_img, random.randint(100, width), height - 25, "speed")
             power = True
 
-        my_win.window.blit(environment.skybox, (0, 0))
+        my_win.blit(environment.skybox, (0, 0))
         
-        dragon.draw(my_win.window)
-        dragon.draw_health(my_win.window)
+        dragon.draw(my_win)
+        dragon.draw_health(my_win)
 
         dragon.arrive(char, 1.0/10)
         dragon.apply_steering()
-        dragon.move(dt, WIDTH, HEIGHT)
+        dragon.move(dt, width, height)
 
         char.handle_input(keymap, dragon, joystick)        
 
-        char.draw(my_win.window)
-        char.draw_health(my_win.window)
-        char.simulate(dt, WIDTH, HEIGHT)
+        char.draw(my_win)
+        char.draw_health(my_win)
+        char.simulate(dt, width, height)
 
         if power and p_up != None:
-            p_up.draw(my_win.window)
+            p_up.draw(my_win)
             power = p_up.collide(char)
             
         pygame.display.update()

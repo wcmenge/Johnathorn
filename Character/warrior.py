@@ -19,14 +19,14 @@ class Warrior(Character):
         attacking = []
         ##Load sprites
 
-        for i in range(1,5):
+        for i in range(1,6):
             image = pygame.image.load(f'images/warrior/wAttack{i}.png')
             attacking.append(image)
 
 
         walkingRight = []
         walkingLeft = []
-        for i in range(1,8):
+        for i in range(1,9):
             image = pygame.image.load(f'images/warrior/wWalk{i}.png')
             walkingRight.append(image)
             walkingLeft.append(pygame.transform.flip(image, True, False))
@@ -55,8 +55,7 @@ class Warrior(Character):
     def attack(self, target):
         self.expression = ATTACKING
         if self.collide(target):
-            target.remove_health(self.damage)
-
+            super().attack(target)
         
 
     def block(self):

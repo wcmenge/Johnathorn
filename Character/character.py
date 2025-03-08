@@ -69,11 +69,13 @@ class Character:
     def draw(self, window):
         imgs = self.expressions[self.expression]
 
+        self.animtimer += 1
+
         if self.animtimer > 1000.0 / self.animspeed:
             self.animidx = (self.animidx + 1) % len(imgs)
             self.animtimer = 0
 
-        img = imgs[self.animidx]
+        img = imgs[min(self.animidx, len(imgs) - 1)]
         window.blit(img, (round(self.pos.x), round(self.pos.y)))
 
     def jump(self):

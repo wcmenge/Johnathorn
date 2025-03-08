@@ -10,7 +10,7 @@ from Character.warrior import Warrior
 
 class CharacterDefault(Enum):
     WARRIOR = Warrior(500, 500, 0, 0, 200, 100, 50, 50)
-    MAGE = Mage(500, 500, 0, 0, 50, 100, 100, 100)
+    MAGE =  Mage(500, 500, 0, 0, 50, 100, 100, 100)
     DRUID = Druid(500, 500, 0, 0, 100, 100, 100, 100)
     ARCHER = Archer(500, 500, 0, 0, 100, 100, 300, 300)
 

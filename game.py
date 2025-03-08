@@ -141,6 +141,7 @@ def run_game(char):
     dt = 0
     keepGoing = True
     power = False
+    p_up = None
     while keepGoing:
         dt = clock.tick(60)
         #clock.tick(30)  # Limit frame rate to 30 FPS
@@ -169,16 +170,17 @@ def run_game(char):
         ptemp_img = pygame.image.load("images/p_up.png")
         p_img = pygame.transform.scale(ptemp_img, (25, 25))
         
-        p_up = None
-        if chance == 25:
-            p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "health")
-            power = True
-        elif chance == 50:
-            p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "damage")
-            power = True
-        elif chance == 75:
-            p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "speed")
-            power = True
+        
+        if not power and p_up == None:
+            if chance == 25:
+                p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "health")
+                power = True
+            elif chance == 50:
+                p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "damage")
+                power = True
+            elif chance == 75:
+                p_up = PowerUp(p_img, random.randint(100, WIDTH), HEIGHT - 25, "speed")
+                power = True
 
         my_win.window.blit(environment.skybox, (0, 0))
         
@@ -198,6 +200,8 @@ def run_game(char):
         if power and p_up != None:
             p_up.draw(my_win.window)
             power = p_up.collide(char)
+            if not power:
+                p_up = None
             
         pygame.display.update()
 

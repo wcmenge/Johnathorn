@@ -16,19 +16,15 @@ class Character:
     def __init__(self, x_pos, y_pos, x_vel, y_vel, health, special, xs, ys, bounding_box):
         self.health = health
         self.special = special
-        self.pos = Vector(0.0, 0.0)
-        self.pos.x = x_pos
-        self.pos.y = y_pos
-        self.velocity = Vector(0.0, 0.0)
-        self.velocity.x = x_vel
-        self.velocity.y = y_vel
+        self.pos = Vector(x_pos, y_pos)
+        self.velocity = Vector(x_vel, y_vel)
         self.buff = None
         self.debuff = None
         self.xs = xs
         self.ys = ys
         self.damage = 25
         self.bbox = bounding_box
-        0
+        
         # self.expressions should be set up elsewhere with appropriate image lists
 
     def set_vel(self, new_x, new_y):
@@ -59,7 +55,6 @@ class Character:
 
     def get_debuff(self):
         return self.debuff
-
     def set_pos(self, new_x, new_y):
         self.pos = (new_x, new_y)
 
@@ -118,7 +113,7 @@ class Character:
 
     # def handle_input(self, keymap, target):
     def handle_input(self, keymap, target, joystick=None):
-        self.velocity.x = 0  # Reset velocity before applying movement
+        self.velocity.x = 0.0  # Reset velocity before applying movement
 
         # Keyboard Controls
         if keymap.get(pygame.K_w, False):

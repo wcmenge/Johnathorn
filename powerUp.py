@@ -23,7 +23,7 @@ class PowerUp():
         two sprites collide based on their bounding boxes.
         """
         c_bool = self.get_bbox().colliderect(other.get_bbox())
-        if c_bool == True:
+        if c_bool:
             print("Colision")
             other.add_buff(self.type)
             return False

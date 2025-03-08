@@ -12,21 +12,21 @@ class Dragon(Enemy):
     def __init__(self, sheet, x_pos, y_pos, x_vel, y_vel, health, target):
         self.expressions = []
         self.load_images(sheet)
-        self.expression = DEFAULT
-        self.img = self.expressions[DEFAULT][0]  # Use the first image of the default expression
+        self.expression = DEATH
+        self.img = pygame.transform.scale2x(pygame.transform.flip(sheet.subsurface(0, 0, 115, 110), True, False))#self.expressions[DEFAULT][0]  # Use the first image of the default expression
         bounding_box = (x_pos, y_pos, self.img.get_width(), self.img.get_height())
         super().__init__(x_pos, y_pos, x_vel, y_vel, health, target, bounding_box)
 
     def load_images(self,sheet):
-        self.expressions = {DEFAULT: [], DEATH: []}
         
+        death = []
         # Load default expression images
-        self.expressions[DEFAULT].append(pygame.transform.scale2x(pygame.transform.flip(sheet.subsurface(0, 0, 115, 110), True, False)))
+        self.expressions.append(pygame.transform.scale2x(pygame.transform.flip(sheet.subsurface(0, 0, 115, 110), True, False)))
 
         # Load death expression images
-        for i in range(1, 5):
-            image = pygame.transform.scale2x(pygame.image.load(f'images/dragon/dragDeath{i}.png'))
-            self.expressions[DEATH].append(image)
+        for i in range(1, 6):
+            death.append(pygame.transform.scale2x(pygame.image.load(f'images/dragon/dragDeath{i}.png')))
+        self.expressions.append(death)    
 
     # def attack(self):
     #     return

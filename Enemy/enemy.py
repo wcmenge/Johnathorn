@@ -8,7 +8,7 @@ DEATH = 1
 
 class Enemy:
 
-    animspeed = 20.0  # frames per second
+    animspeed = 30.0  # frames per second
     animtimer = 0.0
     animidx = 0
 
@@ -19,7 +19,7 @@ class Enemy:
         self.velocity = Vector(x_vel, y_vel)
         self.speedlimit = self.velocity
         self.target = target
-        self.expression = DEFAULT  # initialize expression
+        self.expression = DEATH  # initialize expression
 
         #Stuff with spread sheet
 
@@ -45,7 +45,13 @@ class Enemy:
     def draw(self, window):
         imgs = self.expressions[self.expression]
         
-        if self.animtimer > 1000.0 / self.animspeed:
+        # Increment the animation timer
+        self.animtimer += 1
+
+        # Calculate the frame duration based on the animation speed
+        frame_duration = 1000.0 / self.animspeed
+
+        if self.animtimer > frame_duration:
             self.animidx = (self.animidx + 1) % len(imgs)
             self.animtimer = 0
 
@@ -61,7 +67,6 @@ class Enemy:
     def bounce (self, width, height):
 
         img = self.expressions[self.expression]
-        print("bounce")
         
         if (self.pos.x + img[0].get_width()) > width:
             self.pos.x = width - img[0].get_width()
@@ -128,7 +133,6 @@ class Enemy:
             self.steering += [desired_velocity.minus(self.velocity).times(weight)]
 
     def move (self, dt, width, height):
-        print("move")
         self.bounce(width, height)
         self.clamp_v ()
         self.stop_v ()

@@ -21,7 +21,6 @@ def play_game():
     
     
 #TODO: Change this function to use new environment class for main menu screen
-#TODO: Use GameClock Class instead of directly using pygame clock()
 def startScreen(myWindow):
     width = myWindow.get_width()
     height = myWindow.get_height()
@@ -64,7 +63,6 @@ def startScreen(myWindow):
             return "Druid"
 
 #TODO: Change function to use new environment class for end screen
-#TODO: Use GameClock Class instead of directly using pygame clock()
 def endScreen(myWindow):
     keepGoing = True
     
@@ -104,7 +102,6 @@ def endScreen(myWindow):
 
     PygameWrapper.quit()
 
-#TODO: Use GameClock Class instead of directly using pygame clock()
 def initalizeEnvironment(char, myWindow):
 
     environment: Environment = Environment(myWindow.get_width(), myWindow.get_height())
@@ -124,7 +121,6 @@ def initalizeEnvironment(char, myWindow):
     return keymap, joystick, char, environment 
 
 
-#TODO: Use GameClock Class instead of directly using pygame clock()
 def runGame(char, myWindow):
     keymap, joystick, char, environment = initalizeEnvironment(char, myWindow)
     clock = pygameWrapper.clock

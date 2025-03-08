@@ -3,6 +3,7 @@ import sys
 from Enemy.dragon import Dragon
 from Environment.environment import Environment, Window
 from Character.character_defaults import CharacterDefault
+from Pygame.pygame_wrapper import PygameWrapper
 from powerUp import PowerUp
 import random
 
@@ -11,39 +12,39 @@ L2BUTTON = 4
 SQUAREBUTTON = 2
 XBUTTON = 0
 
+pygameWrapper: PygameWrapper = PygameWrapper()
+
 def play_game():
-    pygame.init()
-    my_win = pygame.display.set_mode()
-    char = start_screen(my_win)
-    win = run_game(char, my_win)
-    end_screen(win, my_win)
+    char = startScreen(pygameWrapper.window)
+    hasPlayerWon = runGame(char, pygameWrapper.window)
+    endScreen(pygameWrapper.window)
     
     
 #TODO: Change this function to use new environment class for main menu screen
 #TODO: Use GameClock Class instead of directly using pygame clock()
-def start_screen(my_win):
-    pygame.mixer.music.load("Sounds/opening_sound.ogg")
-    pygame.mixer.music.play()
-    pygame.mixer.music.set_volume(.1)
+def startScreen(myWindow):
+    width = myWindow.get_width()
+    height = myWindow.get_height()
+
+    clock = pygameWrapper.clock
     
-    width = my_win.get_width()
-    height = my_win.get_height()
-    
-    # Load background image once
-    background = pygame.image.load("images/JOHNATHORN.png")
-    new_background = pygame.transform.scale(background, (width, height))
-    
-    clock = pygame.time.Clock()
+    background = PygameWrapper.createSurfaceFromImage("images/JOHNATHORN.png")
+    new_background = PygameWrapper.transformSurfaceScale(background, width, height)
+
+    PygameWrapper.loadMusic("Sounds/opening_sound.ogg")
+    PygameWrapper.setVolume(0)
+    PygameWrapper.playMusic()
+
     keymap = {}
     
     while True:
         # Blit the background once per frame
-        my_win.blit(new_background, (0, 0))
-        pygame.display.flip()
+        myWindow.blit(new_background, (0, 0))
+        PygameWrapper.flipDisplay()
         
         clock.tick(30)  # Limit frame rate to 30 FPS
         
-        for event in pygame.event.get():
+        for event in PygameWrapper.getEvents():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -64,26 +65,25 @@ def start_screen(my_win):
 
 #TODO: Change function to use new environment class for end screen
 #TODO: Use GameClock Class instead of directly using pygame clock()
-def end_screen(win, my_win):
+def endScreen(myWindow):
     keepGoing = True
-    width = my_win.get_width()
-    height = my_win.get_height()
-    clock = pygame.time.Clock()
-    if win:
-        background = pygame.image.load("images/END_SCREEN.png")
-        new_background = pygame.transform.scale(background, (width, height))
-        my_win.blit(new_background, (0, 0))
-    else:
-        background = pygame.image.load("images/END_SCREEN.png")
-        new_background = pygame.transform.scale(background, (width, height))
-        my_win.blit(new_background, (0, 0))
+    
+    width = myWindow.get_width()
+    height = myWindow.get_height()
+
+    clock = pygameWrapper.clock
+
+    background = PygameWrapper.createSurfaceFromImage("images/END_SCREEN.png")
+    newBackground = PygameWrapper.transformSurfaceScale(background, width, height)
+    myWindow.blit(newBackground, (0, 0))
+
     while keepGoing:
         clock.tick(30)  # Limit frame rate to 30 FPS
 
         keymap = {}
-        pygame.display.update()
+        PygameWrapper.updateDisplay()
 
-        for event in pygame.event.get():
+        for event in PygameWrapper.getEvents():
             if event.type == pygame.QUIT:
                 keepGoing = False
             elif event.type == pygame.KEYDOWN:
@@ -102,34 +102,34 @@ def end_screen(win, my_win):
                 keepGoing = False
 
 
-    pygame.quit()
+    PygameWrapper.quit()
 
 #TODO: Use GameClock Class instead of directly using pygame clock()
-def initalizePygame(char, my_win):
+def initalizeEnvironment(char, myWindow):
 
-    environment: Environment = Environment(my_win.get_width(), my_win.get_height())
+    environment: Environment = Environment(myWindow.get_width(), myWindow.get_height())
 
-    clock = pygame.time.Clock()
     keymap = {}
 
     joystick = None
-    if pygame.joystick.get_count() > 0:
-        joystick = pygame.joystick.Joystick(0)
+    if PygameWrapper.getJoystickCount() > 0:
+        joystick = PygameWrapper.createJoystick()
         joystick.init()
 
     char = CharacterDefault.handleSelection(char)
 
-    my_win.blit(environment.skybox, (0, 0))
+    myWindow.blit(environment.skybox, (0, 0))
     environment.playAmbientSound()
 
-    return my_win, clock, keymap, joystick, char, environment 
+    return keymap, joystick, char, environment 
 
 
 #TODO: Use GameClock Class instead of directly using pygame clock()
-def run_game(char, my_win):
-    my_win, clock, keymap, joystick, char, environment = initalizePygame(char, my_win)
-    width = my_win.get_width()
-    height = my_win.get_height()
+def runGame(char, myWindow):
+    keymap, joystick, char, environment = initalizeEnvironment(char, myWindow)
+    clock = pygameWrapper.clock
+    width = myWindow.get_width()
+    height = myWindow.get_height()
 
     dragon_sheet = pygame.image.load("images/thats_our_dragon.png")
     dragon = Dragon(dragon_sheet, 800, 500, 200, 200, 500, char)
@@ -143,11 +143,10 @@ def run_game(char, my_win):
         # if dt > 500:
         #     continue
 
-        for event in pygame.event.get():
+        for event in PygameWrapper.getEvents():
             if event.type == pygame.QUIT:
                 keepGoing = False
-                pygame.quit()
-                sys.exit() 
+                PygameWrapper.quit()
             elif event.type == pygame.KEYDOWN:
                 key = event.key
                 keymap[key] = True
@@ -162,8 +161,9 @@ def run_game(char, my_win):
                 keymap[key] = False
 
         chance = random.randint(0, 200)
-        ptemp_img = pygame.image.load("images/p_up.png")
-        p_img = pygame.transform.scale(ptemp_img, (25, 25))
+
+        ptemp_img = PygameWrapper.createSurfaceFromImage("images/p_up.png")
+        p_img = PygameWrapper.transformSurfaceScale(ptemp_img, 25, 25)
         
         p_up = None
         if chance == 25:
@@ -176,10 +176,10 @@ def run_game(char, my_win):
             p_up = PowerUp(p_img, random.randint(100, width), height - 25, "speed")
             power = True
 
-        my_win.blit(environment.skybox, (0, 0))
+        myWindow.blit(environment.skybox, (0, 0))
         
-        dragon.draw(my_win)
-        dragon.draw_health(my_win)
+        dragon.draw(myWindow)
+        dragon.draw_health(myWindow)
 
         dragon.arrive(char, 1.0/10)
         dragon.apply_steering()
@@ -187,15 +187,15 @@ def run_game(char, my_win):
 
         char.handle_input(keymap, dragon, joystick)        
 
-        char.draw(my_win)
-        char.draw_health(my_win)
+        char.draw(myWindow)
+        char.draw_health(myWindow)
         char.simulate(dt, width, height)
 
         if power and p_up != None:
-            p_up.draw(my_win)
+            p_up.draw(myWindow)
             power = p_up.collide(char)
             
-        pygame.display.update()
+        PygameWrapper.updateDisplay()
 
         if char.health == 0:
             keepGoing = False
@@ -203,6 +203,6 @@ def run_game(char, my_win):
         if dragon.health == 0:
             return True
 
-    pygame.quit()
+    PygameWrapper.quit()
 
 play_game()

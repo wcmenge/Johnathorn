@@ -66,7 +66,6 @@ def start_screen(my_win):
 #TODO: Use GameClock Class instead of directly using pygame clock()
 def end_screen(win, my_win):
     keepGoing = True
-    my_win = pygame.display.set_mode()
     width = my_win.get_width()
     height = my_win.get_height()
     clock = pygame.time.Clock()

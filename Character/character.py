@@ -28,7 +28,7 @@ class Character:
         self.ys = ys
         self.damage = 25
         self.bbox = bounding_box
-        self.expression = DEFAULT  # initialize expression
+        0
         # self.expressions should be set up elsewhere with appropriate image lists
 
     def set_vel(self, new_x, new_y):

@@ -21,11 +21,11 @@ class Archer(Character):
             image = pygame.image.load(f'images/archer/aWalk{i}.png')
             walkingRight.append(image)
             walkingLeft.append(pygame.transform.flip(image, True, False))
-
-        default = [walkingRight[0]]
+        self.img = walkingRight[0] 
+        default = [self.img]
         attacking = [aAttack]
         
-        self.img = walkingRight[0] 
+        
         self.expressions.append(default)
         self.expressions.append(walkingRight)
         self.expressions.append(attacking)

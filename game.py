@@ -204,8 +204,10 @@ def run_game(char):
         if char.health == 0:
             keepGoing = False
             return False
-        if dragon.health == 0:
-            return True
+        if not dragon.isAlive():
+            # start a timer
+            dragon.die()
+        
 
     pygame.quit()
 

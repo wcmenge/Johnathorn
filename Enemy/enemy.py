@@ -3,22 +3,23 @@ import pygame
 
 #Controller button constants
 
-
+DEFAULT = 0
+DEATH = 1
 
 class Enemy:
 
-    
-    def __init__(self, sheet, x_pos, y_pos, x_vel, y_vel, health, target, bounding_box):
+    animspeed = 20.0  # frames per second
+    animtimer = 0.0
+    animidx = 0
+
+    def __init__(self, x_pos, y_pos, x_vel, y_vel, health, target, bounding_box):
         self.bbox = bounding_box
         self.health = health
-        self.pos = Vector(0.0, 0.0)
-        self.pos.x = x_pos
-        self.pos.y = y_pos
-        self.velocity = Vector(0.0, 0.0)
-        self.velocity.x = x_vel
-        self.velocity.y = y_vel
+        self.pos = Vector(x_pos, y_pos)
+        self.velocity = Vector(x_vel, y_vel)
         self.speedlimit = self.velocity
         self.target = target
+        self.expression = DEFAULT  # initialize expression
 
         #Stuff with spread sheet
 
@@ -42,10 +43,14 @@ class Enemy:
         self.target.remove_health(1)
 
     def draw(self, window):
-        img = self.expressions[self.expression]
-        window.blit (img, (round(self.pos.x), round(self.pos.y)))
+        imgs = self.expressions[self.expression]
+        
+        if self.animtimer > 1000.0 / self.animspeed:
+            self.animidx = (self.animidx + 1) % len(imgs)
+            self.animtimer = 0
 
-
+        img = imgs[self.animidx]
+        window.blit(img, (round(self.pos.x), round(self.pos.y)))
 
     def simulate(self, millisecs, width, height):
         self.move(millisecs)
@@ -58,15 +63,15 @@ class Enemy:
         img = self.expressions[self.expression]
         print("bounce")
         
-        if (self.pos.x + img.get_width()) > width:
-            self.pos.x = width - img.get_width()
+        if (self.pos.x + img[0].get_width()) > width:
+            self.pos.x = width - img[0].get_width()
             
         elif (self.pos.x) < 0:
             self.pos.x = 0 
             
             
-        if (self.pos.y + img.get_height()) > height:
-            self.pos.y = height - img.get_height()
+        if (self.pos.y + img[0].get_height()) > height:
+            self.pos.y = height - img[0].get_height()
             
             
         elif (self.pos.y) < 0:
@@ -176,3 +181,14 @@ class Enemy:
         
 
     
+    def isAlive(self):
+        """ Returns true if the enemy is alive, false otherwise. """
+        return self.health > 0
+    
+    def die(self):
+        """ Kills the enemy. """
+        self.health = 0
+        self.velocity = Vector(0, 0)
+        self.steering = []
+        self.expression = DEATH
+        print("Enemy is dead")

@@ -9,11 +9,11 @@ class Dragon(Enemy):
     expression = "default"
     steering = []
 
-    def __init__(self, sheet, x_pos, y_pos, x_vel, y_vel, health, target):
+    def __init__(self, x_pos, y_pos, x_vel, y_vel, health, target):
         self.expressions["default"] = pygame.transform.scale2x(pygame.transform.flip(sheet.subsurface(0,0,115,110), True, False))
         self.img = self.expressions["default"]
         bounding_box = (x_pos, y_pos, self.img.get_width(), self.img.get_height())
-        Enemy.__init__(self, sheet, x_pos, y_pos, x_vel, y_vel, health, target, bounding_box)
+        Enemy.__init__(self, x_pos, y_pos, x_vel, y_vel, health, target, bounding_box)
 
         ##Setting Expressions
 

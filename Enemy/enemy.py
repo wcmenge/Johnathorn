@@ -5,10 +5,10 @@ import pygame
 
 
 
-class Enemy:
+class Enemy(pygame.sprite.Sprite):
 
     
-    def __init__(self, sheet, x_pos, y_pos, x_vel, y_vel, health, target, bounding_box):
+    def __init__(self, x_pos, y_pos, x_vel, y_vel, health, target, bounding_box):
         self.bbox = bounding_box
         self.health = health
         self.pos = Vector(0.0, 0.0)
@@ -21,6 +21,29 @@ class Enemy:
         self.target = target
 
         #Stuff with spread sheet
+    def update(self):
+        self.current_frame += 1
+        frames = self.sprites[self.current_action]
+        
+        if isinstance(frames, dict):  # Handling attack sub-actions
+            if self.current_sub_action and self.current_sub_action in frames:
+                frames = frames[self.current_sub_action]
+            else:
+                return
+        
+        if self.current_frame >= len(frames):
+            self.current_frame = 0
+        self.image = frames[self.current_frame]
+    
+    def set_action(self, action, sub_action=None):
+        if action == "attack" and sub_action in self.sprites["attack"]:
+            self.current_action = "attack"
+            self.current_sub_action = sub_action
+            self.current_frame = 0
+        elif action in self.sprites and isinstance(self.sprites[action], list):
+            self.current_action = action
+            self.current_sub_action = None
+            self.current_frame = 0
 
     def set_vel(self, new_x ,new_y):
         self.velocity = (new_x, new_y)
@@ -38,12 +61,14 @@ class Enemy:
         return self.pos
     
     def attack(self):
+        self.set_action("attack")
         #self.expressions["attack"]
         self.target.remove_health(1)
 
     def draw(self, window):
-        img = self.expressions[self.expression]
+        img = self.current_frame
         window.blit (img, (round(self.pos.x), round(self.pos.y)))
+        self.update()
 
 
 

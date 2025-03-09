@@ -7,7 +7,7 @@ WALKING_RIGHT = 1
 ATTACKING = 2
 WALKING_LEFT = 3
 
-class Character:
+class Character(Pygame.sprite.Sprite):
 
     animspeed = 20.0  # frames per second
     animtimer = 0.0

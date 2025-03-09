@@ -1,5 +1,6 @@
 from vector import Vector
 import pygame
+import random
 
 #Controller button constants
 
@@ -19,6 +20,7 @@ class Enemy(pygame.sprite.Sprite):
         self.velocity.y = y_vel
         self.speedlimit = self.velocity
         self.target = target
+        
 
         #Stuff with spread sheet
     def update(self):
@@ -36,14 +38,18 @@ class Enemy(pygame.sprite.Sprite):
         self.image = frames[self.current_frame]
     
     def set_action(self, action, sub_action=None):
-        if action == "attack" and sub_action in self.sprites["attack"]:
-            self.current_action = "attack"
-            self.current_sub_action = sub_action
-            self.current_frame = 0
+        if action == "attack":
+            if not sub_action and self.sprites["attack"]:  # Pick a random attack type
+                sub_action = random.choice(list(self.sprites["attack"].keys()))
+            if sub_action in self.sprites["attack"]:
+                self.current_action = "attack"
+                self.current_sub_action = sub_action
+                self.current_frame = 0
         elif action in self.sprites and isinstance(self.sprites[action], list):
             self.current_action = action
             self.current_sub_action = None
             self.current_frame = 0
+
 
     def set_vel(self, new_x ,new_y):
         self.velocity = (new_x, new_y)

@@ -1,6 +1,7 @@
 import pygame
 import sys
 from Enemy.dragon import Dragon
+from Enemy.minotaur import Minotaur
 from Environment.environment import Environment, Window
 from Character.character_defaults import CharacterDefault
 from Pygame.pygame_wrapper import PygameWrapper
@@ -127,12 +128,13 @@ def runGame(char, myWindow):
     width = myWindow.get_width()
     height = myWindow.get_height()
 
-    dragon_sheet = pygame.image.load("images/thats_our_dragon.png")
-    dragon = Dragon(dragon_sheet, 800, 500, 200, 200, 500, char)
+    #dragon_sheet = pygame.image.load("images/thats_our_dragon.png")
+    enemy = Minotaur(800, 500, 200, 200, 500, char)#Dragon(800, 500, 200, 200, 500, char)
 
     dt = 0
     keepGoing = True
     power = False
+    p_up = None
     while keepGoing:
         dt = clock.tick(60)
         #clock.tick(30)  # Limit frame rate to 30 FPS
@@ -161,42 +163,45 @@ def runGame(char, myWindow):
         ptemp_img = PygameWrapper.createSurfaceFromImage("images/p_up.png")
         p_img = PygameWrapper.transformSurfaceScale(ptemp_img, 25, 25)
         
-        p_up = None
-        if chance == 25:
-            p_up = PowerUp(p_img, random.randint(100, width), height - 25, "health")
-            power = True
-        elif chance == 50:
-            p_up = PowerUp(p_img, random.randint(100, width), height - 25, "damage")
-            power = True
-        elif chance == 75:
-            p_up = PowerUp(p_img, random.randint(100, width), height - 25, "speed")
-            power = True
+        
+        if not power and p_up == None:
+            if chance == 25:
+                p_up = PowerUp(p_img, random.randint(100, width), height - 25, "health")
+                power = True
+            elif chance == 50:
+                p_up = PowerUp(p_img, random.randint(100, width), height - 25, "damage")
+                power = True
+            elif chance == 75:
+                p_up = PowerUp(p_img, random.randint(100, width), height - 25, "speed")
+                power = True
 
         myWindow.blit(environment.skybox, (0, 0))
         
-        dragon.draw(myWindow)
-        dragon.draw_health(myWindow)
+        enemy.draw(myWindow)
+        enemy.draw_health(myWindow)
 
-        dragon.arrive(char, 1.0/10)
-        dragon.apply_steering()
-        dragon.move(dt, width, height)
+        enemy.arrive(char, 1.0/10)
+        enemy.apply_steering()
+        enemy.move(dt, width, height)
 
-        char.handle_input(keymap, dragon, joystick)        
+        char.handle_input(keymap, enemy, joystick)        
 
         char.draw(myWindow)
         char.draw_health(myWindow)
         char.simulate(dt, width, height)
 
         if power and p_up != None:
-            p_up.draw(myWindow)
+            p_up.draw(my_win.window)
             power = p_up.collide(char)
+            if not power:
+                p_up = None
             
         PygameWrapper.updateDisplay()
 
         if char.health == 0:
             keepGoing = False
             return False
-        if dragon.health == 0:
+        if enemy.health == 0:
             return True
 
     PygameWrapper.quit()

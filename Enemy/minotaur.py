@@ -8,7 +8,7 @@ class Minotaur(Enemy):
         self.sprites = {"default":[], "walk": [], "attack": {}, "die": []}
         sprite_folder = 'images/minotaur'
         # Load images from subfolders (walk, attack, die)
-        for action in ["walk", "die"]:
+        for action in ["default","walk", "die"]:
             action_folder = os.path.join(sprite_folder, action)
             if os.path.exists(action_folder):
                 for filename in sorted(os.listdir(action_folder)):

@@ -1,13 +1,13 @@
 from enum import Enum
 from vector import Vector
 import pygame
-
+import random
 DEFAULT = 0
 WALKING_RIGHT = 1
 ATTACKING = 2
 WALKING_LEFT = 3
 
-class Character(Pygame.sprite.Sprite):
+class Character(pygame.sprite.Sprite):
 
     animspeed = 20.0  # frames per second
     animtimer = 0.0
@@ -30,6 +30,33 @@ class Character(Pygame.sprite.Sprite):
         self.bbox = bounding_box
         self.expression = DEFAULT  # initialize expression
         # self.expressions should be set up elsewhere with appropriate image lists
+
+    def update(self):
+        self.current_frame += 1
+        frames = self.sprites[self.current_action]
+        
+        if isinstance(frames, dict):  # Handling attack sub-actions
+            if self.current_sub_action and self.current_sub_action in frames:
+                frames = frames[self.current_sub_action]
+            else:
+                return
+        
+        if self.current_frame >= len(frames):
+            self.current_frame = 0
+        self.image = frames[self.current_frame]
+    
+    def set_action(self, action, sub_action=None):
+        if action == "attack":
+            if not sub_action and self.sprites["attack"]:  # Pick a random attack type
+                sub_action = random.choice(list(self.sprites["attack"].keys()))
+            if sub_action in self.sprites["attack"]:
+                self.current_action = "attack"
+                self.current_sub_action = sub_action
+                self.current_frame = 0
+        elif action in self.sprites and isinstance(self.sprites[action], list):
+            self.current_action = action
+            self.current_sub_action = None
+            self.current_frame = 0
 
     def set_vel(self, new_x, new_y):
         self.velocity = (new_x, new_y)

@@ -4,7 +4,7 @@ import pygame
 import os
 class Minotaur(Enemy):
     def __init__(self, x_pos, y_pos, x_vel, y_vel, health, target):
-        super().__init__()
+        self.steering = []
         self.sprites = {"default":[], "walk": [], "attack": {}, "die": []}
         sprite_folder = 'images/minotaur'
         # Load images from subfolders (walk, attack, die)
@@ -35,7 +35,8 @@ class Minotaur(Enemy):
         self.current_frame = 0
         self.image = self.sprites[self.current_action][self.current_frame]
         self.rect = self.image.get_rect()
-    
+        bounding_box = (x_pos, y_pos, self.image.get_width(), self.image.get_height())
+        Enemy.__init__(self, x_pos, y_pos, x_vel, y_vel, health, target, bounding_box)
     def attack(self):
         if "melee" in self.sprites["attack"]:
             self.set_action("attack", "melee")

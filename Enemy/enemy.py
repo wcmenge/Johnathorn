@@ -72,7 +72,7 @@ class Enemy(pygame.sprite.Sprite):
         self.target.remove_health(1)
 
     def draw(self, window):
-        img = self.current_frame
+        img = self.image
         window.blit (img, (round(self.pos.x), round(self.pos.y)))
         self.update()
 
@@ -86,7 +86,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def bounce (self, width, height):
 
-        img = self.expressions[self.expression]
+        img = self.image
         print("bounce")
         
         if (self.pos.x + img.get_width()) > width:

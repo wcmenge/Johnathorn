@@ -191,7 +191,7 @@ def runGame(char, myWindow):
         char.simulate(dt, width, height)
 
         if power and p_up != None:
-            p_up.draw(my_win.window)
+            p_up.draw(myWindow)
             power = p_up.collide(char)
             if not power:
                 p_up = None

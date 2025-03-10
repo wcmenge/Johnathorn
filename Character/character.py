@@ -28,7 +28,7 @@ class Character(pygame.sprite.Sprite):
         self.ys = ys
         self.damage = 25
         self.bbox = bounding_box
-        self.expression = DEFAULT  # initialize expression
+        #self.expression = DEFAULT  # initialize expression
         # self.expressions should be set up elsewhere with appropriate image lists
 
     def update(self):
@@ -94,19 +94,20 @@ class Character(pygame.sprite.Sprite):
         return self.pos
 
     def attack(self, target):
-        self.expression = ATTACKING
+        self.set_action("attack")
         self.animidx = 0  # Reset animation index when switching to the attack state
         target.remove_health(1)
 
     def draw(self, window):
-        imgs = self.expressions[self.expression]
+        img = self.image
 
-        if self.animtimer > 1000.0 / self.animspeed:
-            self.animidx = (self.animidx + 1) % len(imgs)
-            self.animtimer = 0
+        # if self.animtimer > 1000.0 / self.animspeed:
+        #     self.animidx = (self.animidx + 1) % len(imgs)
+        #     self.animtimer = 0
 
-        img = imgs[self.animidx]
+        img = self.image
         window.blit(img, (round(self.pos.x), round(self.pos.y)))
+        self.update()
 
     def jump(self):
         start_jump = self.pos.y
@@ -114,6 +115,7 @@ class Character(pygame.sprite.Sprite):
             self.pos.y -= 10
 
     def move(self, millisecs):
+        #self.set_action("walk")
         self.pos.y += self.velocity.y * float(millisecs) / 1000
         self.pos.x += self.velocity.x * float(millisecs) / 1000
         if self.velocity.x == 0:
@@ -127,14 +129,14 @@ class Character(pygame.sprite.Sprite):
         self.simulateGravity()
 
     def bounce(self, width, height):
-        imgs = self.expressions[self.expression]
-        if (self.pos.x + imgs[0].get_width()) > width:
+        imgs = self.image
+        if (self.pos.x + imgs.get_width()) > width:
             self.pos.x = width - imgs[0].get_width()
         elif self.pos.x < 0:
             self.pos.x = 0
 
-        if (self.pos.y + imgs[0].get_height()) > height:
-            self.pos.y = height - imgs[0].get_height()
+        if (self.pos.y + imgs.get_height()) > height:
+            self.pos.y = height - imgs.get_height()
         elif self.pos.y < 0:
             self.pos.y = 0
             self.velocity.y = -self.velocity.y
@@ -152,13 +154,13 @@ class Character(pygame.sprite.Sprite):
             self.jump()
         if keymap.get(pygame.K_a, False):
             self.velocity.x -= self.xs
-            self.expression = WALKING_LEFT
+            self.set_action("walk")
         if keymap.get(pygame.K_d, False):
             self.velocity.x += self.xs
-            self.expression = WALKING_RIGHT
+            self.set_action("walk")
         if keymap.get(pygame.K_s, False):
+            self.set_action("attack")
             self.attack(target)
-            self.expression = ATTACKING
 
         # Controller Support
         if joystick:
@@ -178,7 +180,7 @@ class Character(pygame.sprite.Sprite):
             # Attacking with the X button
             if x_button:
                 self.attack(target)
-                self.expression = ATTACKING
+                self.set_action("attack")
 
     def draw_health(self, window):
         left = int(window.get_width() * 0.03)
